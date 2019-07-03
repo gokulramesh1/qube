@@ -1,0 +1,18 @@
+from googlesearch import search
+import pandas as pd
+
+
+df = pd.read_excel("C:\Dataframes\Movies.xlsx")
+df['Year'] = df['Release Date'].dt.year
+df['Query'] = df['Movie'] + ' ' + df['Year'].map(str)
+
+
+def get_status(query):
+    for url in search(query, tld='co.in', stop=5, pause=2, only_standard=True):
+        if 'wikipedia' in url:
+            return ''
+    return 'Not found'
+
+
+df['Status'] = df['Query'].apply(get_status)
+df[['Sl.no','Movie','Year','Status']].to_excel("C:\Dataframes\Result.xlsx", index=False)
